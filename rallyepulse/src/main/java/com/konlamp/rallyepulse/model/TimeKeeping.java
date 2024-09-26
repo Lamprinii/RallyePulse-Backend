@@ -25,5 +25,9 @@ public class TimeKeeping {
     @Column
     private LocalTime total_time;
 
+    public TimeKeeping(TimeKeepingid id, LocalTime start_time) {
+        this.id = id;
+        this.start_time = start_time;
+    }
 }
 

@@ -2,8 +2,11 @@ package com.konlamp.rallyepulse;
 
 import com.konlamp.rallyepulse.model.Competitor;
 import com.konlamp.rallyepulse.model.SpecialStage;
+import com.konlamp.rallyepulse.model.TimeKeeping;
+import com.konlamp.rallyepulse.model.TimeKeepingid;
 import com.konlamp.rallyepulse.repository.CompetitorRepository;
 import com.konlamp.rallyepulse.repository.SpecialStageRepository;
+import com.konlamp.rallyepulse.repository.TimeKeepingRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +17,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,11 +30,11 @@ public class RallyePulseApplication {
 	}
 
 	@Bean
-	CommandLineRunner run (CompetitorRepository competitorRepository, SpecialStageRepository specialStageRepository) {
+	CommandLineRunner run (CompetitorRepository competitorRepository, SpecialStageRepository specialStageRepository, TimeKeepingRepository timeKeepingRepository) {
 		return args ->{
 			competitorRepository.save(new Competitor(1L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
 			specialStageRepository.save(new SpecialStage(1L, "Eleftherochori", 18.62F));
-
+			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,1L), LocalTime.now(), LocalTime.now(), LocalTime.now()));
 
 		};
 	}
