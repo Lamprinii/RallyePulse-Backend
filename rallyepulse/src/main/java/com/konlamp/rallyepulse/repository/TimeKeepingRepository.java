@@ -14,5 +14,8 @@ import java.util.Optional;
 @Repository
 public interface TimeKeepingRepository extends JpaRepository<TimeKeeping, TimeKeepingid> {
 
+    List<TimeKeeping> findByIdCompetitorid(Long competitorid);
+    List<TimeKeeping> findByIdSpecialstageid(Long specialstageid);
+
 
 }

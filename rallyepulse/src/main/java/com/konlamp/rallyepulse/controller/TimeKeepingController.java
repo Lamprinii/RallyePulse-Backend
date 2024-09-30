@@ -3,6 +3,7 @@ package com.konlamp.rallyepulse.controller;
 import com.konlamp.rallyepulse.model.Competitor;
 import com.konlamp.rallyepulse.model.TimeKeeping;
 import com.konlamp.rallyepulse.model.secondary.FinishTime;
+import com.konlamp.rallyepulse.model.secondary.Overall;
 import com.konlamp.rallyepulse.model.secondary.StartTime;
 import com.konlamp.rallyepulse.service.CategoryService;
 import com.konlamp.rallyepulse.service.EmailService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -53,6 +55,32 @@ public class TimeKeepingController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(path = "getStageClassification/{id}")
+    public ResponseEntity<List<TimeKeeping>> stageclassification(@PathVariable("id") Long stage_id) {
+        try {
+            return new ResponseEntity<>(timeKeepingService.stage_classification(stage_id), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "getOverallClassification")
+    public ResponseEntity<List<Overall>> overallclassification() {
+        try {
+
+            return new ResponseEntity<>(timeKeepingService.OverallClassification(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 
 
 }

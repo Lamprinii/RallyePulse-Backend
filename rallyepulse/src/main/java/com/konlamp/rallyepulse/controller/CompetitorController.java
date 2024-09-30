@@ -2,8 +2,10 @@ package com.konlamp.rallyepulse.controller;
 
 
 import com.konlamp.rallyepulse.model.Competitor;
+import com.konlamp.rallyepulse.model.Penalty;
 import com.konlamp.rallyepulse.service.CompetitorService;
 import com.konlamp.rallyepulse.service.EmailService;
+import com.konlamp.rallyepulse.service.PenaltyService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +26,14 @@ import java.util.Optional;
 public class CompetitorController {
     private final CompetitorService competitorService;
     private final EmailService emailService;
+    private final PenaltyService penaltyService;
 
 
     @Autowired
-    public CompetitorController(CompetitorService competitorService,EmailService emailService) {
+    public CompetitorController(CompetitorService competitorService,EmailService emailService,PenaltyService penaltyService) {
         this.competitorService = competitorService;
         this.emailService = emailService;
+        this.penaltyService = penaltyService;
     }
 
     @GetMapping(path = "getCompetitors")
@@ -58,6 +63,7 @@ public class CompetitorController {
     public ResponseEntity<Competitor> addCompetitor(@RequestBody Competitor competitor) {
         try {
             Competitor newcompetitor = competitorService.addNewCompetitor(competitor);
+            penaltyService.addNewPenalty(new Penalty(competitor.getCo_number(), LocalTime.of(0,0,0,0)));
             return new ResponseEntity<>(newcompetitor, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
