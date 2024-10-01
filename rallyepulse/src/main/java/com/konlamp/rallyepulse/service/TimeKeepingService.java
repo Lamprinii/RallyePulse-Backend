@@ -1,9 +1,6 @@
 package com.konlamp.rallyepulse.service;
 
-import com.konlamp.rallyepulse.model.Competitor;
-import com.konlamp.rallyepulse.model.Penalty;
-import com.konlamp.rallyepulse.model.TimeKeeping;
-import com.konlamp.rallyepulse.model.TimeKeepingid;
+import com.konlamp.rallyepulse.model.*;
 import com.konlamp.rallyepulse.model.secondary.Overall;
 import com.konlamp.rallyepulse.repository.CompetitorRepository;
 import com.konlamp.rallyepulse.repository.TimeKeepingRepository;
@@ -141,6 +138,54 @@ public class TimeKeepingService {
             Penalty penalty = penaltyService.getPenaltybyid(number);
             total = total.plusNanos(penalty.getTime().toNanoOfDay());
             overall.add(new Overall(number, total));
+        }
+        int i=0;
+        int j=0;
+        int k=0;
+        while (j<overall.size()) {
+            i=j;
+            k = j;
+            Overall min = overall.get(j);
+            while (i < overall.size()) {
+                if (min.getTime().compareTo(overall.get(i).getTime()) >0) {
+                    min = overall.get(i);
+                    k = i;
+                }
+                i++;
+            }
+            Overall temp = overall.get(j);
+            overall.set(k, temp);
+            overall.set(j, min);
+            j++;
+        }
+
+
+        PdfGenerator pdfGenerator = new PdfGenerator();
+        pdfGenerator.generate(overall, competitorService);
+        return overall;
+    }
+    public List<Overall> OverallClassificationByStage(Long stage_id) {
+        List<Competitor> competitors = competitorService.getCompetitors();
+        List <Long> numbers = new ArrayList<>();
+        for (Competitor competitor : competitors) {
+            numbers.add(competitor.getCo_number());
+        }
+        List <Overall> overall = new ArrayList<>();
+        for (Long number : numbers) {
+            List<TimeKeeping>temp = timeKeepingRepository.findByIdCompetitorid(number);
+            if (temp.get(temp.size()-1).getId().getSpecialstageid() >= stage_id && temp.get(temp.size()-1).getFinish_time() != null) {
+                LocalTime total = LocalTime.of(0, 0, 0, 0);
+                for (TimeKeeping timekeeping : temp) {
+                    if (timekeeping.getId().getSpecialstageid() > stage_id) {
+                       break;
+                    }
+                    total = total.plusNanos(timekeeping.getTotal_time().toNanoOfDay());
+                }
+                Penalty penalty = penaltyService.getPenaltybyid(number);
+                total = total.plusNanos(penalty.getTime().toNanoOfDay());
+                overall.add(new Overall(number, total));
+            }
+
         }
         int i=0;
         int j=0;

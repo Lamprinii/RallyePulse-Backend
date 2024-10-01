@@ -79,6 +79,18 @@ public class TimeKeepingController {
         }
     }
 
+    @GetMapping(path = "getOverallByStage/{id}")
+    public ResponseEntity<List<Overall>> overallbystage(@PathVariable("id") Long stage_id) {
+        try {
+            return new ResponseEntity<>(timeKeepingService.OverallClassificationByStage(stage_id), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 
 

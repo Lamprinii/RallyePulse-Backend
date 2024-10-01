@@ -43,7 +43,7 @@ public class RallyePulseApplication {
 			TimeUnit.SECONDS.sleep(5);
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,2L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,25,3,0)));
 			TimeUnit.SECONDS.sleep(5);
-			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,2L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,14,22,0)));
+			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,2L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,23,3,0)));
 
 		};
 	}
