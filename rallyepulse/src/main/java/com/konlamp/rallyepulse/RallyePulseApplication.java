@@ -33,16 +33,16 @@ public class RallyePulseApplication {
 		return args ->{
 			competitorRepository.save(new Competitor(1L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
 			competitorRepository.save(new Competitor(2L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
-			specialStageRepository.save(new SpecialStage(1L, "Eleftherochori", 18.62F));
-			specialStageRepository.save(new SpecialStage(2L, "Eleftherochori", 18.62F));
+			specialStageRepository.save(new SpecialStage(1L, "Eleftherochori I", 18.62F));
+			specialStageRepository.save(new SpecialStage(2L, "Eleftherochori II", 18.62F));
 			penaltyRepository.save(new Penalty(1L,LocalTime.of(0,0,0,0)));
 			penaltyRepository.save(new Penalty(2L,LocalTime.of(0,0,0,0)));
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,1L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,15,23,0)));
-			TimeUnit.SECONDS.sleep(5);
+			//TimeUnit.SECONDS.sleep(5);
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,1L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,16,22,0)));
-			TimeUnit.SECONDS.sleep(5);
+			//TimeUnit.SECONDS.sleep(5);
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,2L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,25,3,0)));
-			TimeUnit.SECONDS.sleep(5);
+			//TimeUnit.SECONDS.sleep(5);
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,2L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,23,3,0)));
 
 		};

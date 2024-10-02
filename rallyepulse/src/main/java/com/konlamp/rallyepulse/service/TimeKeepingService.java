@@ -25,6 +25,10 @@ public class TimeKeepingService {
     private final CompetitorService competitorService;
     private final PenaltyService penaltyService;
 
+    private final SpecialStageService specialStageService;
+
+
+
 
 
     public LocalTime CalculateStageTime (LocalTime start_time, LocalTime finish_time, int decimal) {
@@ -116,6 +120,8 @@ public class TimeKeepingService {
             stagetimes.set(j, min);
             j++;
         }
+        PdfGenerator pdfGenerator = new PdfGenerator();
+        pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get());
 
         return stagetimes;
     }
@@ -208,6 +214,8 @@ public class TimeKeepingService {
         }
 
 
+        PdfGenerator pdfGenerator = new PdfGenerator();
+        pdfGenerator.generateoverallbystage(overall, competitorService,specialStageService.getSpecialStageById(stage_id).get());
 
         return overall;
     }
