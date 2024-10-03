@@ -24,29 +24,20 @@ public class TimeKeepingService {
     private final TimeKeepingRepository timeKeepingRepository;
     private final CompetitorService competitorService;
     private final PenaltyService penaltyService;
-
     private final SpecialStageService specialStageService;
-
-
-
-
 
     public LocalTime CalculateStageTime (LocalTime start_time, LocalTime finish_time, int decimal) {
         int nano_start = start_time.getNano();
         int nano_finish = finish_time.getNano();
-
         while (nano_start > decimal) {
             nano_start = nano_start / 10;
         }
-
         while (nano_finish > decimal) {
             nano_finish = nano_finish / 10;
         }
-
         int seconds = 0;
         int minutes = 0;
         int hours = 0;
-
         int nano = nano_finish - nano_start;
         if (nano < 0) {
             nano = nano + decimal;
@@ -57,13 +48,11 @@ public class TimeKeepingService {
             seconds = seconds + 60;
             minutes = minutes - 1;
         }
-
         minutes = finish_time.getMinute() - start_time.getMinute() + minutes;
         if (minutes < 0) {
             minutes = minutes + 60;
             hours = hours - 1;
         }
-
         hours = finish_time.getHour() - start_time.getHour() + hours;
         if (nano != 0) {
             while (nano < 100000000) {
@@ -71,10 +60,10 @@ public class TimeKeepingService {
             }
         }
         LocalTime stagetime = LocalTime.of(hours, minutes, seconds, nano);
-
         return stagetime;
 
     }
+
     public TimeKeeping finish(Long co_number, Long stage, LocalTime finish_time, int decimal){
         Optional <TimeKeeping> timekeeping = timeKeepingRepository.findById(new TimeKeepingid(co_number, stage));
         if (timekeeping.isPresent()) {
@@ -90,6 +79,12 @@ public class TimeKeepingService {
     }
 
     public TimeKeeping start(Long co_number, Long stage, LocalTime start_time, int decimal){
+        if (competitorService.getCompetitorbyid(co_number).isEmpty()) {
+            throw new EntityNotFoundException("The competitor does not exist");
+        }
+        if (specialStageService.getSpecialStageById(stage).isEmpty()) {
+            throw new EntityNotFoundException("The special stage does not exist");
+        }
         Optional <TimeKeeping> timekeeping = timeKeepingRepository.findById(new TimeKeepingid(co_number, stage));
         if (timekeeping.isPresent()) {
             throw new IllegalStateException("This car has already started this stage");
@@ -100,6 +95,9 @@ public class TimeKeepingService {
     }
 
     public List<TimeKeeping> stage_classification(Long stage_id){
+        if (specialStageService.getSpecialStageById(stage_id).isEmpty()) {
+            throw new EntityNotFoundException("The special stage does not exist");
+        }
         List <TimeKeeping> stagetimes = timeKeepingRepository.findByIdSpecialstageid(stage_id);
         int i=0;
         int j=0;
@@ -122,7 +120,6 @@ public class TimeKeepingService {
         }
         PdfGenerator pdfGenerator = new PdfGenerator();
         pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get());
-
         return stagetimes;
     }
 
@@ -134,12 +131,18 @@ public class TimeKeepingService {
         }
         List <Overall> overall = new ArrayList<>();
         for (Long number : numbers) {
+           boolean retired = false;
             List<TimeKeeping>temp = timeKeepingRepository.findByIdCompetitorid(number);
             LocalTime total = LocalTime.of(0, 0, 0, 0);
             for (TimeKeeping timekeeping : temp) {
-                System.out.println(total.toString());
-                System.out.println(timekeeping.getTotal_time().toString());
+                if (timekeeping.getTotal_time() == null) {
+                    retired = true;
+                    break;
+                }
                 total = total.plusNanos(timekeeping.getTotal_time().toNanoOfDay());
+            }
+            if (retired == true) {
+                continue;
             }
             Penalty penalty = penaltyService.getPenaltybyid(number);
             total = total.plusNanos(penalty.getTime().toNanoOfDay());
@@ -164,13 +167,117 @@ public class TimeKeepingService {
             overall.set(j, min);
             j++;
         }
-
-
         PdfGenerator pdfGenerator = new PdfGenerator();
         pdfGenerator.generate(overall, competitorService);
         return overall;
     }
+
+    public List<Overall> OverallClassificationByClass(String car_class) {
+        List<Competitor> competitors = competitorService.getCompetitors();
+        List <Long> numbers = new ArrayList<>();
+        for (Competitor competitor : competitors) {
+            if (competitor.getCar_class().equals(car_class)) {
+                numbers.add(competitor.getCo_number());
+            }
+        }
+        List <Overall> overall = new ArrayList<>();
+        for (Long number : numbers) {
+            boolean retired = false;
+            List<TimeKeeping>temp = timeKeepingRepository.findByIdCompetitorid(number);
+            LocalTime total = LocalTime.of(0, 0, 0, 0);
+            for (TimeKeeping timekeeping : temp) {
+                if (timekeeping.getTotal_time() == null) {
+                    retired = true;
+                    break;
+                }
+                total = total.plusNanos(timekeeping.getTotal_time().toNanoOfDay());
+            }
+            if (retired == true) {
+                continue;
+            }
+            Penalty penalty = penaltyService.getPenaltybyid(number);
+            total = total.plusNanos(penalty.getTime().toNanoOfDay());
+            overall.add(new Overall(number, total));
+        }
+        int i=0;
+        int j=0;
+        int k=0;
+        while (j<overall.size()) {
+            i=j;
+            k = j;
+            Overall min = overall.get(j);
+            while (i < overall.size()) {
+                if (min.getTime().compareTo(overall.get(i).getTime()) >0) {
+                    min = overall.get(i);
+                    k = i;
+                }
+                i++;
+            }
+            Overall temp = overall.get(j);
+            overall.set(k, temp);
+            overall.set(j, min);
+            j++;
+        }
+        PdfGenerator pdfGenerator = new PdfGenerator();
+        pdfGenerator.generatebycategoryclass(overall, competitorService,"Class", car_class);
+        return overall;
+    }
+
+    public List<Overall> OverallClassificationByCategory(String category) {
+        List<Competitor> competitors = competitorService.getCompetitors();
+        List <Long> numbers = new ArrayList<>();
+        for (Competitor competitor : competitors) {
+            if (competitor.getCategory().equals(category)) {
+                numbers.add(competitor.getCo_number());
+            }
+        }
+        List <Overall> overall = new ArrayList<>();
+        for (Long number : numbers) {
+            boolean retired = false;
+            List<TimeKeeping>temp = timeKeepingRepository.findByIdCompetitorid(number);
+            LocalTime total = LocalTime.of(0, 0, 0, 0);
+            for (TimeKeeping timekeeping : temp) {
+                if (timekeeping.getTotal_time() == null) {
+                    retired = true;
+                    break;
+                }
+                total = total.plusNanos(timekeeping.getTotal_time().toNanoOfDay());
+            }
+            if (retired == true) {
+                continue;
+            }
+            Penalty penalty = penaltyService.getPenaltybyid(number);
+            total = total.plusNanos(penalty.getTime().toNanoOfDay());
+            overall.add(new Overall(number, total));
+        }
+        int i=0;
+        int j=0;
+        int k=0;
+        while (j<overall.size()) {
+            i=j;
+            k = j;
+            Overall min = overall.get(j);
+            while (i < overall.size()) {
+                if (min.getTime().compareTo(overall.get(i).getTime()) >0) {
+                    min = overall.get(i);
+                    k = i;
+                }
+                i++;
+            }
+            Overall temp = overall.get(j);
+            overall.set(k, temp);
+            overall.set(j, min);
+            j++;
+        }
+        PdfGenerator pdfGenerator = new PdfGenerator();
+        pdfGenerator.generatebycategoryclass(overall, competitorService,"Category", category);
+        return overall;
+    }
+
     public List<Overall> OverallClassificationByStage(Long stage_id) {
+        if (specialStageService.getSpecialStageById(stage_id).isEmpty()) {
+            throw new EntityNotFoundException("The special stage does not exist");
+        }
         List<Competitor> competitors = competitorService.getCompetitors();
         List <Long> numbers = new ArrayList<>();
         for (Competitor competitor : competitors) {
@@ -212,11 +319,8 @@ public class TimeKeepingService {
             overall.set(j, min);
             j++;
         }
-
-
         PdfGenerator pdfGenerator = new PdfGenerator();
         pdfGenerator.generateoverallbystage(overall, competitorService,specialStageService.getSpecialStageById(stage_id).get());
-
         return overall;
     }
 }

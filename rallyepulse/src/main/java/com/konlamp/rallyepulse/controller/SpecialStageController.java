@@ -6,6 +6,7 @@ import com.konlamp.rallyepulse.model.SpecialStage;
 import com.konlamp.rallyepulse.service.CompetitorService;
 import com.konlamp.rallyepulse.service.EmailService;
 import com.konlamp.rallyepulse.service.SpecialStageService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,6 @@ import java.util.Optional;
 public class SpecialStageController {
     private final SpecialStageService specialStageService;
     private final EmailService emailService;
-
 
     @Autowired
     public SpecialStageController(SpecialStageService specialStageService,EmailService emailService) {
@@ -48,7 +48,8 @@ public class SpecialStageController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(specialstage.get(), HttpStatus.OK);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -58,7 +59,12 @@ public class SpecialStageController {
         try {
             SpecialStage newspecialstage = specialStageService.saveSpecialStage(specialStage);
             return new ResponseEntity<>(newspecialstage, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

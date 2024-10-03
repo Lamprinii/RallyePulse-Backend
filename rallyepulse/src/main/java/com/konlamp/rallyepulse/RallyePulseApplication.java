@@ -37,7 +37,7 @@ public class RallyePulseApplication {
 			LocalTime TEMP2=TEMP.minusNanos(TEMP.getNano()).minusMinutes(15);
 			LocalTime TEMP3=TEMP.minusNanos(TEMP2.toNanoOfDay());
 			competitorRepository.save(new Competitor(1L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
-			competitorRepository.save(new Competitor(2L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
+			competitorRepository.save(new Competitor(2L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C1", "A4"));
 			specialStageRepository.save(new SpecialStage(1L, "Eleftherochori I", 18.62F));
 			specialStageRepository.save(new SpecialStage(2L, "Eleftherochori II", 18.62F));
 			penaltyRepository.save(new Penalty(1L,LocalTime.of(0,0,0,0)));

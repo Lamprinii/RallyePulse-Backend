@@ -5,6 +5,7 @@ import com.konlamp.rallyepulse.model.Penalty;
 import com.konlamp.rallyepulse.model.TimeKeeping;
 import com.konlamp.rallyepulse.model.secondary.FinishTime;
 import com.konlamp.rallyepulse.service.PenaltyService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +26,16 @@ public class PenaltyController {
         try {
             penalty=penaltyService.addPenalty(penalty.getTime(),penalty.getCo_number());
             return new ResponseEntity<>(penalty, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping(path = "getPenalties")
-    public ResponseEntity<List<Penalty>> getCompetitors() {
+    public ResponseEntity<List<Penalty>> getPenalties() {
         try {
             List<Penalty> penalties = penaltyService.getPenalties();
             return new ResponseEntity<>(penalties, HttpStatus.OK);
@@ -41,13 +45,15 @@ public class PenaltyController {
         }
     }
 
-    @GetMapping(path = "getCompetitor/{id}")
-    public ResponseEntity<Penalty> getCompetitor(@PathVariable("id") Long id) {
+    @GetMapping(path = "getPenalty/{id}")
+    public ResponseEntity<Penalty> getPenalty(@PathVariable("id") Long id) {
         try {
             Penalty penalty = penaltyService.getPenaltybyid(id);
-
             return new ResponseEntity<>(penalty, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

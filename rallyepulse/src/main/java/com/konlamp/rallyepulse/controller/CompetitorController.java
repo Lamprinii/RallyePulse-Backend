@@ -6,6 +6,7 @@ import com.konlamp.rallyepulse.model.Penalty;
 import com.konlamp.rallyepulse.service.CompetitorService;
 import com.konlamp.rallyepulse.service.EmailService;
 import com.konlamp.rallyepulse.service.PenaltyService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,10 @@ public class CompetitorController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(competitor.get(), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -65,7 +69,10 @@ public class CompetitorController {
             Competitor newcompetitor = competitorService.addNewCompetitor(competitor);
             penaltyService.addNewPenalty(new Penalty(competitor.getCo_number(), LocalTime.of(0,0,0,0)));
             return new ResponseEntity<>(newcompetitor, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

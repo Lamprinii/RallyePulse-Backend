@@ -8,6 +8,7 @@ import com.konlamp.rallyepulse.model.secondary.StartTime;
 import com.konlamp.rallyepulse.service.CategoryService;
 import com.konlamp.rallyepulse.service.EmailService;
 import com.konlamp.rallyepulse.service.TimeKeepingService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,10 @@ public class TimeKeepingController {
             LocalTime time = LocalTime.of(starttime.getHour(), starttime.getMinute(), starttime.getSecond(),starttime.getNano());
             TimeKeeping timekeeping = timeKeepingService.start(starttime.getCo_number(), starttime.getStage(), time, starttime.getDecimal());
             return new ResponseEntity<>(timekeeping, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -50,7 +54,10 @@ public class TimeKeepingController {
             LocalTime time = LocalTime.of(finishtime.getHour(), finishtime.getMinute(), finishtime.getSecond(),finishtime.getNano());
             TimeKeeping timekeeping = timeKeepingService.finish(finishtime.getCo_number(), finishtime.getStage(), time, finishtime.getDecimal());
             return new ResponseEntity<>(timekeeping, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -59,10 +66,11 @@ public class TimeKeepingController {
     @GetMapping(path = "getStageClassification/{id}")
     public ResponseEntity<List<TimeKeeping>> stageclassification(@PathVariable("id") Long stage_id) {
         try {
-
             return new ResponseEntity<>(timeKeepingService.stage_classification(stage_id), HttpStatus.OK);
-
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -80,12 +88,39 @@ public class TimeKeepingController {
         }
     }
 
+    @GetMapping(path = "getOverallClassificationByClass/{id}")
+    public ResponseEntity<List<Overall>> overallclassificationbyclass(@PathVariable ("id") String class_id) {
+        try {
+
+            return new ResponseEntity<>(timeKeepingService.OverallClassificationByClass(class_id), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "getOverallClassificationByCategory/{id}")
+    public ResponseEntity<List<Overall>> overallclassificationbycategory(@PathVariable ("id") String category_id) {
+        try {
+
+            return new ResponseEntity<>(timeKeepingService.OverallClassificationByCategory(category_id), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping(path = "getOverallByStage/{id}")
     public ResponseEntity<List<Overall>> overallbystage(@PathVariable("id") Long stage_id) {
         try {
             return new ResponseEntity<>(timeKeepingService.OverallClassificationByStage(stage_id), HttpStatus.OK);
 
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
