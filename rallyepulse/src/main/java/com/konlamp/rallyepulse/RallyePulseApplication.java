@@ -13,9 +13,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,19 +33,24 @@ public class RallyePulseApplication {
 	@Bean
 	CommandLineRunner run (CompetitorRepository competitorRepository, SpecialStageRepository specialStageRepository, TimeKeepingRepository timeKeepingRepository, PenaltyRepository penaltyRepository) {
 		return args ->{
+			LocalTime TEMP=LocalTime.now();
+			LocalTime TEMP2=TEMP.minusNanos(TEMP.getNano()).minusMinutes(15);
+			LocalTime TEMP3=TEMP.minusNanos(TEMP2.toNanoOfDay());
 			competitorRepository.save(new Competitor(1L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
 			competitorRepository.save(new Competitor(2L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
 			specialStageRepository.save(new SpecialStage(1L, "Eleftherochori I", 18.62F));
 			specialStageRepository.save(new SpecialStage(2L, "Eleftherochori II", 18.62F));
 			penaltyRepository.save(new Penalty(1L,LocalTime.of(0,0,0,0)));
 			penaltyRepository.save(new Penalty(2L,LocalTime.of(0,0,0,0)));
-			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,1L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,15,23,0)));
-			//TimeUnit.SECONDS.sleep(5);
-			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,1L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,16,22,0)));
-			//TimeUnit.SECONDS.sleep(5);
-			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,2L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,25,3,0)));
-			//TimeUnit.SECONDS.sleep(5);
-			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,2L), LocalTime.now(), LocalTime.now(), LocalTime.of(0,23,3,0)));
+			int nanos1=816000000;
+			int nanos2=952000000;
+			int nanos3=125000000;
+			int nanos4=456000000;
+			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,1L), LocalTime.of(15,23,0,0), LocalTime.of(15,23,0,0).plusMinutes(15).plusSeconds(23).plusNanos(nanos3), LocalTime.of(00,15,23,0).plusNanos(nanos3)));
+			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,1L), LocalTime.of(15,25,0,0), LocalTime.of(15,25,0,0).plusMinutes(16).plusSeconds(22).plusNanos(nanos1), LocalTime.of(00,16,22,0).plusNanos(nanos1)));
+			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,2L), LocalTime.of(16,45,0,0),LocalTime.of(16,45,0,0).plusMinutes(17).plusSeconds(49).plusNanos(nanos4) , LocalTime.of(00,17,49,0).plusNanos(nanos4)));
+			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,2L), LocalTime.of(16,47,0,0), LocalTime.of(16,47,0,0).plusMinutes(16).plusSeconds(10).plusNanos(nanos2), LocalTime.of(00,16,10,0).plusNanos(nanos2)));
+
 
 		};
 	}

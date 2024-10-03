@@ -85,7 +85,7 @@ public class TimeKeepingService {
             return timeKeepingRepository.save(time);
         }
         else {
-            throw new EntityNotFoundException("Timekeeping not found");
+            throw new EntityNotFoundException("The Car did not Start This Stage");
         }
     }
 
