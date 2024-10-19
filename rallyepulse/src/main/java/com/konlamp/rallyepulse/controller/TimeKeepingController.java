@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalTime;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/time")
 public class TimeKeepingController {
@@ -38,6 +37,21 @@ public class TimeKeepingController {
         try {
             LocalTime time = LocalTime.of(starttime.getHour(), starttime.getMinute(), starttime.getSecond(),starttime.getNano());
             TimeKeeping timekeeping = timeKeepingService.start(starttime.getCo_number(), starttime.getStage(), time, starttime.getDecimal());
+            return new ResponseEntity<>(timekeeping, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(path="/modifystart")
+    public ResponseEntity<TimeKeeping> StartModify(@RequestBody StartTime starttime) {
+        try {
+            LocalTime time = LocalTime.of(starttime.getHour(), starttime.getMinute(), starttime.getSecond(),starttime.getNano());
+            TimeKeeping timekeeping = timeKeepingService.startmodify(starttime.getCo_number(), starttime.getStage(), time, starttime.getDecimal());
             return new ResponseEntity<>(timekeeping, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

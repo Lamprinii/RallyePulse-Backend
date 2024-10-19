@@ -29,6 +29,13 @@ public class TimeKeepingService {
     public LocalTime CalculateStageTime (LocalTime start_time, LocalTime finish_time, int decimal) {
         int nano_start = start_time.getNano();
         int nano_finish = finish_time.getNano();
+        if (decimal == 1 ) {
+            decimal = 10;
+        } else if (decimal == 2) {
+            decimal = 100;
+        } else {
+            decimal = 1000;
+        }
         while (nano_start > decimal) {
             nano_start = nano_start / 10;
         }
@@ -71,6 +78,22 @@ public class TimeKeepingService {
             LocalTime stage_time = CalculateStageTime(time.getStart_time(), finish_time, decimal);
             time.setFinish_time(finish_time);
             time.setTotal_time(stage_time);
+            return timeKeepingRepository.save(time);
+        }
+        else {
+            throw new EntityNotFoundException("The Car did not Start This Stage");
+        }
+    }
+
+    public TimeKeeping startmodify(Long co_number, Long stage, LocalTime start_time, int decimal){
+        Optional <TimeKeeping> timekeeping = timeKeepingRepository.findById(new TimeKeepingid(co_number, stage));
+        if (timekeeping.isPresent()) {
+            TimeKeeping time = timekeeping.get();
+            time.setStart_time(start_time);
+            if (time.getFinish_time() != null) {
+                LocalTime stage_time = CalculateStageTime(time.getStart_time(), time.getFinish_time(), decimal);
+                time.setTotal_time(stage_time);
+            }
             return timeKeepingRepository.save(time);
         }
         else {
