@@ -25,6 +25,7 @@ public class TimeKeepingService {
     private final CompetitorService competitorService;
     private final PenaltyService penaltyService;
     private final SpecialStageService specialStageService;
+    private final NotificationService socket;
 
     public LocalTime CalculateStageTime (LocalTime start_time, LocalTime finish_time, int decimal) {
         int nano_start = start_time.getNano();
@@ -78,6 +79,7 @@ public class TimeKeepingService {
             LocalTime stage_time = CalculateStageTime(time.getStart_time(), finish_time, decimal);
             time.setFinish_time(finish_time);
             time.setTotal_time(stage_time);
+            socket.SendNotification(time);
             return timeKeepingRepository.save(time);
         }
         else {
