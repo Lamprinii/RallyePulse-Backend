@@ -21,8 +21,13 @@ public class NotificationService {
     public void SendNotification(TimeKeeping time) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            String Message = mapper.writeValueAsString(new timetosend(time.getId(),time.getStart_time().toString(),time.getFinish_time().toString(),time.getTotal_time().toString()));
-            messagingTemplate.convertAndSend("/stoptime/"+time.getId().getSpecialstageid()+"/updates", Message);
+            if (time.getFinish_time() != null) {
+                String Message = mapper.writeValueAsString(new timetosend(time.getId(),time.getStart_time().toString(),time.getFinish_time().toString(),time.getTotal_time().toString()));
+                messagingTemplate.convertAndSend("/stoptime/"+time.getId().getSpecialstageid()+"/updates", Message);
+            } else {
+                String Message = mapper.writeValueAsString(new timetosend(time.getId(),time.getStart_time().toString(),"",time.getTotal_time().toString()));
+                messagingTemplate.convertAndSend("/stoptime/"+time.getId().getSpecialstageid()+"/updates", Message);
+            }
         } catch(Exception e) {
             e.printStackTrace();
         }

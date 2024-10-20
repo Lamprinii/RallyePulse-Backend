@@ -1,10 +1,7 @@
 package com.konlamp.rallyepulse;
 
 import com.konlamp.rallyepulse.model.*;
-import com.konlamp.rallyepulse.repository.CompetitorRepository;
-import com.konlamp.rallyepulse.repository.PenaltyRepository;
-import com.konlamp.rallyepulse.repository.SpecialStageRepository;
-import com.konlamp.rallyepulse.repository.TimeKeepingRepository;
+import com.konlamp.rallyepulse.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,8 +28,9 @@ public class RallyePulseApplication {
 	}
 
 	@Bean
-	CommandLineRunner run (CompetitorRepository competitorRepository, SpecialStageRepository specialStageRepository, TimeKeepingRepository timeKeepingRepository, PenaltyRepository penaltyRepository) {
+	CommandLineRunner run (CompetitorRepository competitorRepository, SpecialStageRepository specialStageRepository, TimeKeepingRepository timeKeepingRepository, PenaltyRepository penaltyRepository, RallyeInformationRepository rallyeInformationRepository) {
 		return args ->{
+			rallyeInformationRepository.save(new RallyeInformation(1L, "Rallye Fthiotidos", "20/10/2024", "Lamia"));
 			LocalTime TEMP=LocalTime.now();
 			LocalTime TEMP2=TEMP.minusNanos(TEMP.getNano()).minusMinutes(15);
 			LocalTime TEMP3=TEMP.minusNanos(TEMP2.toNanoOfDay());

@@ -77,6 +77,21 @@ public class TimeKeepingController {
         }
     }
 
+    @PutMapping(path="/stop")
+    public ResponseEntity<TimeKeeping> Stop(@RequestBody FinishTime finishtime) {
+        try {
+            LocalTime time = LocalTime.of(finishtime.getHour(), finishtime.getMinute(), finishtime.getSecond(),finishtime.getNano());
+            TimeKeeping timekeeping = timeKeepingService.stop(finishtime.getCo_number(), finishtime.getStage(), time, finishtime.getDecimal());
+            return new ResponseEntity<>(timekeeping, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping(path = "getStageClassification/{id}")
     public ResponseEntity<List<TimeKeeping>> stageclassification(@PathVariable("id") Long stage_id) {
         try {

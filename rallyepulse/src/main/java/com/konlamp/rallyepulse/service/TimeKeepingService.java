@@ -87,6 +87,19 @@ public class TimeKeepingService {
         }
     }
 
+    public TimeKeeping stop(Long co_number, Long stage, LocalTime finish_time, int decimal){
+        Optional <TimeKeeping> timekeeping = timeKeepingRepository.findById(new TimeKeepingid(co_number, stage));
+        if (timekeeping.isPresent()) {
+            TimeKeeping time = timekeeping.get();
+            time.setTotal_time(finish_time);
+            socket.SendNotification(time);
+            return timeKeepingRepository.save(time);
+        }
+        else {
+            throw new EntityNotFoundException("The Car did not Start This Stage");
+        }
+    }
+
     public TimeKeeping startmodify(Long co_number, Long stage, LocalTime start_time, int decimal){
         Optional <TimeKeeping> timekeeping = timeKeepingRepository.findById(new TimeKeepingid(co_number, stage));
         if (timekeeping.isPresent()) {
@@ -112,8 +125,14 @@ public class TimeKeepingService {
         }
         Optional <TimeKeeping> timekeeping = timeKeepingRepository.findById(new TimeKeepingid(co_number, stage));
         if (timekeeping.isPresent()) {
-            throw new IllegalStateException("This car has already started this stage");
-        }
+                TimeKeeping time = timekeeping.get();
+                time.setStart_time(start_time);
+//                if (time.getFinish_time() != null) {
+//                    LocalTime stage_time = CalculateStageTime(time.getStart_time(), time.getFinish_time(), decimal);
+//                    time.setTotal_time(stage_time);
+//                }
+                return timeKeepingRepository.save(time);
+            }
         TimeKeeping time = new TimeKeeping(new TimeKeepingid(co_number, stage), start_time);
 
         return timeKeepingRepository.save(time);
