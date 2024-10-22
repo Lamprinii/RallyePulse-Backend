@@ -7,8 +7,12 @@ import com.konlamp.rallyepulse.model.secondary.Overall;
 import com.konlamp.rallyepulse.model.secondary.StartTime;
 import com.konlamp.rallyepulse.service.CategoryService;
 import com.konlamp.rallyepulse.service.EmailService;
+import com.konlamp.rallyepulse.service.SpecialStageService;
 import com.konlamp.rallyepulse.service.TimeKeepingService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,12 +30,14 @@ import java.util.List;
 public class TimeKeepingController {
     private final TimeKeepingService timeKeepingService;
     private final EmailService emailService;
+    private final SpecialStageService specialStageService;
 
 
     @Autowired
-    public TimeKeepingController(TimeKeepingService timeKeepingService, EmailService emailService) {
+    public TimeKeepingController(TimeKeepingService timeKeepingService, EmailService emailService, SpecialStageService specialStageService) {
         this.timeKeepingService = timeKeepingService;
         this.emailService = emailService;
+        this.specialStageService = specialStageService;
     }
 
     @PostMapping
@@ -96,6 +104,27 @@ public class TimeKeepingController {
     public ResponseEntity<List<TimeKeeping>> stageclassification(@PathVariable("id") Long stage_id) {
         try {
             return new ResponseEntity<>(timeKeepingService.stage_classification(stage_id), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "getStageClassificationpdf/{id}")
+    public ResponseEntity <Resource> stageclassification_pdf(@PathVariable("id") Long stage_id) {
+        try {
+            try {
+                String url = "PDF/StageClassifications/" + specialStageService.getSpecialStageById(stage_id).orElseThrow().getName() + ".pdf";
+                Path filePath = Paths.get(url);
+                Resource resource = new UrlResource(filePath.toUri());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);        } catch (Exception ex) {
+                return ResponseEntity.status(404).body(null);
+            }
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -162,8 +162,8 @@ public class TimeKeepingService {
             stagetimes.set(j, min);
             j++;
         }
-        PdfGenerator pdfGenerator = new PdfGenerator();
-        pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get());
+//        PdfGenerator pdfGenerator = new PdfGenerator();
+//        pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get());
         return stagetimes;
     }
 
