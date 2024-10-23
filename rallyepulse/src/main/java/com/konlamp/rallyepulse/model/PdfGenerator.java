@@ -427,7 +427,7 @@ public class PdfGenerator {
     public void generateoverallbystage(List<Overall> overall, CompetitorService competitorservice,SpecialStage specialStage) {
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("PDF/OverallByStageClassifications/Overall "+specialStage.getName()+".pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("PDF/OverallByStageClassifications/Overall_SS"+specialStage.getId()+".pdf"));
             document.open();
             Image img = Image.getInstance("Images/RallyePulse3 1.png");
             img.scaleAbsoluteHeight(150F);

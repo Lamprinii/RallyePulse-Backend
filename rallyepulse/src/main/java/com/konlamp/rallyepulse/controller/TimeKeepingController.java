@@ -117,7 +117,30 @@ public class TimeKeepingController {
     public ResponseEntity <Resource> stageclassification_pdf(@PathVariable("id") Long stage_id) {
         try {
             try {
+                timeKeepingService.stage_classification(stage_id);
                 String url = "PDF/StageClassifications/" + specialStageService.getSpecialStageById(stage_id).orElseThrow().getName() + ".pdf";
+                Path filePath = Paths.get(url);
+                Resource resource = new UrlResource(filePath.toUri());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);        } catch (Exception ex) {
+                return ResponseEntity.status(404).body(null);
+            }
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "getOverallClassificationpdf")
+    public ResponseEntity <Resource> overallclassification_pdf() {
+        try {
+            try {
+                timeKeepingService.OverallClassification();
+                String url = "PDF/OverallClassifications/OverallClassification.pdf";
                 Path filePath = Paths.get(url);
                 Resource resource = new UrlResource(filePath.toUri());
                 return ResponseEntity.ok()
@@ -146,6 +169,28 @@ public class TimeKeepingController {
         }
     }
 
+    @GetMapping(path = "getOverallClassificationByClasspdf/{id}")
+    public ResponseEntity <Resource> overallclassificationbyclass_pdf(@PathVariable("id") String class_id) {
+        try {
+            try {
+                timeKeepingService.OverallClassificationByClass(class_id);
+                String url = "PDF/OverallClassificationsByCategory/OverallClassificationClass"+class_id+".pdf";
+                Path filePath = Paths.get(url);
+                Resource resource = new UrlResource(filePath.toUri());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);        } catch (Exception ex) {
+                return ResponseEntity.status(404).body(null);
+            }
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping(path = "getOverallClassificationByClass/{id}")
     public ResponseEntity<List<Overall>> overallclassificationbyclass(@PathVariable ("id") String class_id) {
         try {
@@ -158,6 +203,28 @@ public class TimeKeepingController {
         }
     }
 
+    @GetMapping(path = "getOverallClassificationByCategorypdf/{id}")
+    public ResponseEntity <Resource> overallclassificationbycategory_pdf(@PathVariable("id") String class_id) {
+        try {
+            try {
+                timeKeepingService.OverallClassificationByCategory(class_id);
+                String url = "PDF/OverallClassificationsByCategory/OverallClassificationCategory"+class_id+".pdf";
+                Path filePath = Paths.get(url);
+                Resource resource = new UrlResource(filePath.toUri());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);        } catch (Exception ex) {
+                return ResponseEntity.status(404).body(null);
+            }
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping(path = "getOverallClassificationByCategory/{id}")
     public ResponseEntity<List<Overall>> overallclassificationbycategory(@PathVariable ("id") String category_id) {
         try {
@@ -165,6 +232,28 @@ public class TimeKeepingController {
             return new ResponseEntity<>(timeKeepingService.OverallClassificationByCategory(category_id), HttpStatus.OK);
 
         } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "getOverallByStagepdf/{id}")
+    public ResponseEntity <Resource> overallclassificationbybystage_pdf(@PathVariable("id") Long stage_id) {
+        try {
+            try {
+                timeKeepingService.OverallClassificationByStage(stage_id);
+                String url = "PDF/OverallByStageClassifications/Overall_SS"+stage_id+".pdf";
+                Path filePath = Paths.get(url);
+                Resource resource = new UrlResource(filePath.toUri());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);        } catch (Exception ex) {
+                return ResponseEntity.status(404).body(null);
+            }
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
