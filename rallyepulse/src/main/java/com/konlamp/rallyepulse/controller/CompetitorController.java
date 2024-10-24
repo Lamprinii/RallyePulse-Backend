@@ -65,8 +65,24 @@ public class CompetitorController {
     @PostMapping
     public ResponseEntity<Competitor> addCompetitor(@RequestBody Competitor competitor) {
         try {
+            System.out.println(competitor.getCo_number() + " HIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
             Competitor newcompetitor = competitorService.addNewCompetitor(competitor);
             penaltyService.addNewPenalty(new Penalty(competitor.getCo_number(), LocalTime.of(0,0,0,0)));
+            return new ResponseEntity<>(newcompetitor, HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<Competitor> updateCompetitor(@RequestBody Competitor competitor) {
+        try {
+            Competitor newcompetitor = competitorService.updateCompetitor(competitor);
+            //penaltyService.addNewPenalty(new Penalty(competitor.getCo_number(), LocalTime.of(0,0,0,0)));
             return new ResponseEntity<>(newcompetitor, HttpStatus.OK);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
