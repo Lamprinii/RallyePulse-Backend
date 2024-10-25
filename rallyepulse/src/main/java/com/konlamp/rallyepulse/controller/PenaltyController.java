@@ -5,6 +5,7 @@ import com.konlamp.rallyepulse.model.Penalty;
 import com.konlamp.rallyepulse.model.TimeKeeping;
 import com.konlamp.rallyepulse.model.secondary.FinishTime;
 import com.konlamp.rallyepulse.service.PenaltyService;
+import com.konlamp.rallyepulse.service.RallyeInformationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,14 @@ import java.util.Optional;
 @RequestMapping("/api/penalty")
 public class PenaltyController {
     private final PenaltyService penaltyService;
+    private final RallyeInformationService rallyeInformationService;
 
     @PutMapping(path = "addPenalty")
     public ResponseEntity<Penalty> AddPenalty(@RequestBody Penalty penalty) {
         try {
+            if (rallyeInformationService.getRallyeInformation().isResults()) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             penalty=penaltyService.addPenalty(penalty.getTime(),penalty.getCo_number());
             return new ResponseEntity<>(penalty, HttpStatus.OK);
         }

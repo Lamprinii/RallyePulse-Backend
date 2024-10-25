@@ -5,6 +5,7 @@ import com.konlamp.rallyepulse.model.Competitor;
 import com.konlamp.rallyepulse.model.SpecialStage;
 import com.konlamp.rallyepulse.service.CompetitorService;
 import com.konlamp.rallyepulse.service.EmailService;
+import com.konlamp.rallyepulse.service.RallyeInformationService;
 import com.konlamp.rallyepulse.service.SpecialStageService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,13 @@ import java.util.Optional;
 public class SpecialStageController {
     private final SpecialStageService specialStageService;
     private final EmailService emailService;
+    private final RallyeInformationService rallyeInformationService;
 
     @Autowired
-    public SpecialStageController(SpecialStageService specialStageService,EmailService emailService) {
+    public SpecialStageController(SpecialStageService specialStageService, EmailService emailService, RallyeInformationService rallyeInformationService) {
         this.specialStageService = specialStageService;
         this.emailService = emailService;
+        this.rallyeInformationService = rallyeInformationService;
     }
 
     @GetMapping(path = "/getspecialstages")
@@ -56,6 +59,9 @@ public class SpecialStageController {
     @PostMapping
     public ResponseEntity<SpecialStage> addSpecialStage(@RequestBody SpecialStage specialStage) {
         try {
+            if (rallyeInformationService.getRallyeInformation().isResults()) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             SpecialStage newspecialstage = specialStageService.saveSpecialStage(specialStage);
             return new ResponseEntity<>(newspecialstage, HttpStatus.OK);
         } catch (IllegalStateException e) {

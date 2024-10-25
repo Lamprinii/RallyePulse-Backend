@@ -26,6 +26,9 @@ public class CompetitorService {
     public Optional<Competitor> getCompetitorbyid(Long id) {
         return competitorRepository.findById(id);
     }
+    public void deleteCompetitor(Competitor competitor) {
+        competitorRepository.deleteById(competitor.getCo_number());
+    }
 
     public Competitor addNewCompetitor(Competitor competitor) {
         boolean exists = competitorRepository.existsById(competitor.getCo_number());
@@ -40,6 +43,8 @@ public class CompetitorService {
         if(!exists) {
             throw new IllegalStateException("A competitor with this number does not exists");
         }
+
+
        Competitor old_competitor = competitorRepository.findById(competitor.getCo_number()).orElseThrow();
         if (!competitor.getDriver().equals(old_competitor.getDriver())) {
           old_competitor.setDriver(competitor.getDriver());

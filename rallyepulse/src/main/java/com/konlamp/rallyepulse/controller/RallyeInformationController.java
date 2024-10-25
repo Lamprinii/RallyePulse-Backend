@@ -2,6 +2,7 @@ package com.konlamp.rallyepulse.controller;
 
 import com.konlamp.rallyepulse.model.Penalty;
 import com.konlamp.rallyepulse.model.RallyeInformation;
+import com.konlamp.rallyepulse.repository.*;
 import com.konlamp.rallyepulse.service.RallyeInformationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/penalty")
+@RequestMapping("/api/rallyeinfo")
 public class RallyeInformationController {
 
 
     private final RallyeInformationService rallyeInformationService;
+
+
 
     @GetMapping(path = "getRallye")
     public ResponseEntity<RallyeInformation> getRallyeInformation() {
@@ -43,6 +46,23 @@ public class RallyeInformationController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(path="/final")
+    public ResponseEntity SetFinal() {
+        try{
+            rallyeInformationService.setfinal();
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping(path = "delete")
+    public ResponseEntity<String> deleteRallyeInformation() {
+       rallyeInformationService.deleterace();
+       return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

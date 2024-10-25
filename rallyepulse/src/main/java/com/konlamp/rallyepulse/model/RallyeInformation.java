@@ -22,4 +22,5 @@ public class RallyeInformation {
     private String title;
     private String date;
     private String city;
+    private boolean results;
 }

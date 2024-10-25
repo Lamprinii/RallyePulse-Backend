@@ -5,10 +5,7 @@ import com.konlamp.rallyepulse.model.TimeKeeping;
 import com.konlamp.rallyepulse.model.secondary.FinishTime;
 import com.konlamp.rallyepulse.model.secondary.Overall;
 import com.konlamp.rallyepulse.model.secondary.StartTime;
-import com.konlamp.rallyepulse.service.CategoryService;
-import com.konlamp.rallyepulse.service.EmailService;
-import com.konlamp.rallyepulse.service.SpecialStageService;
-import com.konlamp.rallyepulse.service.TimeKeepingService;
+import com.konlamp.rallyepulse.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -31,18 +28,23 @@ public class TimeKeepingController {
     private final TimeKeepingService timeKeepingService;
     private final EmailService emailService;
     private final SpecialStageService specialStageService;
+    private final RallyeInformationService rallyeInformationService;
 
 
     @Autowired
-    public TimeKeepingController(TimeKeepingService timeKeepingService, EmailService emailService, SpecialStageService specialStageService) {
+    public TimeKeepingController(TimeKeepingService timeKeepingService, EmailService emailService, SpecialStageService specialStageService, RallyeInformationService rallyeInformationService) {
         this.timeKeepingService = timeKeepingService;
         this.emailService = emailService;
         this.specialStageService = specialStageService;
+        this.rallyeInformationService = rallyeInformationService;
     }
 
     @PostMapping
     public ResponseEntity<TimeKeeping> Start(@RequestBody StartTime starttime) {
         try {
+            if (rallyeInformationService.getRallyeInformation().isResults()) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             LocalTime time = LocalTime.of(starttime.getHour(), starttime.getMinute(), starttime.getSecond(),starttime.getNano());
             TimeKeeping timekeeping = timeKeepingService.start(starttime.getCo_number(), starttime.getStage(), time, starttime.getDecimal());
             return new ResponseEntity<>(timekeeping, HttpStatus.OK);
@@ -58,6 +60,9 @@ public class TimeKeepingController {
     @PutMapping(path="/modifystart")
     public ResponseEntity<TimeKeeping> StartModify(@RequestBody StartTime starttime) {
         try {
+            if (rallyeInformationService.getRallyeInformation().isResults()) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             LocalTime time = LocalTime.of(starttime.getHour(), starttime.getMinute(), starttime.getSecond(),starttime.getNano());
             TimeKeeping timekeeping = timeKeepingService.startmodify(starttime.getCo_number(), starttime.getStage(), time, starttime.getDecimal());
             return new ResponseEntity<>(timekeeping, HttpStatus.OK);
@@ -73,6 +78,9 @@ public class TimeKeepingController {
     @PutMapping
     public ResponseEntity<TimeKeeping> Finish(@RequestBody FinishTime finishtime) {
         try {
+            if (rallyeInformationService.getRallyeInformation().isResults()) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             LocalTime time = LocalTime.of(finishtime.getHour(), finishtime.getMinute(), finishtime.getSecond(),finishtime.getNano());
             TimeKeeping timekeeping = timeKeepingService.finish(finishtime.getCo_number(), finishtime.getStage(), time, finishtime.getDecimal());
             return new ResponseEntity<>(timekeeping, HttpStatus.OK);
@@ -88,6 +96,9 @@ public class TimeKeepingController {
     @PutMapping(path="/stop")
     public ResponseEntity<TimeKeeping> Stop(@RequestBody FinishTime finishtime) {
         try {
+            if (rallyeInformationService.getRallyeInformation().isResults()) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             LocalTime time = LocalTime.of(finishtime.getHour(), finishtime.getMinute(), finishtime.getSecond(),finishtime.getNano());
             TimeKeeping timekeeping = timeKeepingService.stop(finishtime.getCo_number(), finishtime.getStage(), time, finishtime.getDecimal());
             return new ResponseEntity<>(timekeeping, HttpStatus.OK);
@@ -194,9 +205,7 @@ public class TimeKeepingController {
     @GetMapping(path = "getOverallClassificationByClass/{id}")
     public ResponseEntity<List<Overall>> overallclassificationbyclass(@PathVariable ("id") String class_id) {
         try {
-
             return new ResponseEntity<>(timeKeepingService.OverallClassificationByClass(class_id), HttpStatus.OK);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
