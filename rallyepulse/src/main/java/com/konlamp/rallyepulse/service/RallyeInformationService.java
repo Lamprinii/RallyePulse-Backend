@@ -16,7 +16,6 @@ public class RallyeInformationService {
         return rallyeInformationRepository.save(rallyeInformation);
     }
     public RallyeInformation getRallyeInformation() {
-
         return rallyeInformationRepository.findById(1L).orElse(null);
     }
 

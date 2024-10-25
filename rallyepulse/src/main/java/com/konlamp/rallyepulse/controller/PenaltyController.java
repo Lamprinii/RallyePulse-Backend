@@ -25,7 +25,8 @@ public class PenaltyController {
         try {
             penalty=penaltyService.addPenalty(penalty.getTime(),penalty.getCo_number());
             return new ResponseEntity<>(penalty, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
+        }
+        catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {

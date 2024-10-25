@@ -24,7 +24,8 @@ public class RallyeInformationController {
         try {
             RallyeInformation rallyeInformation = rallyeInformationService.getRallyeInformation();
             return new ResponseEntity<>(rallyeInformation, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
+        }
+        catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {

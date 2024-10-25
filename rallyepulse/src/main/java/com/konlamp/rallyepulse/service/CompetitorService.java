@@ -58,4 +58,12 @@ public class CompetitorService {
         }
         return old_competitor;
     }
+
+    public Competitor findByPassCode(String passCode) {
+        List<Competitor> passes=competitorRepository.findCompetitorByPasscode(passCode);
+        if(passes.isEmpty()){
+            throw new EntityNotFoundException("Competitor with this passcode does not exist");
+        }
+        return passes.get(0);
+    }
 }

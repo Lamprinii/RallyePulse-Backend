@@ -33,7 +33,7 @@ public class Competitor {
         @Id
         private Long co_number;
 
-    @Column
+        @Column
         private String driver;
         @Column
         private String codriver;
@@ -47,6 +47,17 @@ public class Competitor {
         private String category;
         @Column
         private String car_class;
+        @Column
+        private String passcode;
 
-
+    public Competitor(Long co_number, String driver, String codriver, String email, String telephone, String vehicle, String category, String car_class) {
+        this.co_number = co_number;
+        this.driver = driver;
+        this.codriver = codriver;
+        this.email = email;
+        this.telephone = telephone;
+        this.vehicle = vehicle;
+        this.category = category;
+        this.car_class = car_class;
+    }
 }

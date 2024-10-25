@@ -37,6 +37,9 @@ public class TimeKeepingService {
         } else {
             decimal = 1000;
         }
+        if(nano_finish<decimal){
+            nano_finish = 0;
+        }
         while (nano_start > decimal) {
             nano_start = nano_start / 10;
         }
@@ -69,7 +72,6 @@ public class TimeKeepingService {
         }
         LocalTime stagetime = LocalTime.of(hours, minutes, seconds, nano);
         return stagetime;
-
     }
 
     public TimeKeeping finish(Long co_number, Long stage, LocalTime finish_time, int decimal){

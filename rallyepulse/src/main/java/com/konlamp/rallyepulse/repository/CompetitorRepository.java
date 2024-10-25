@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface CompetitorRepository extends JpaRepository<Competitor, Long> {
-
+    List<Competitor> findCompetitorByPasscode(String pass_code);
 
 }
