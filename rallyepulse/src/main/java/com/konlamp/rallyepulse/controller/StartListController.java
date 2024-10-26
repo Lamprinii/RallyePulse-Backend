@@ -17,7 +17,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/starlist")
+@RequestMapping("/api/startlist")
 @RequiredArgsConstructor
 public class StartListController {
 

@@ -3,6 +3,7 @@ package com.konlamp.rallyepulse.controller;
 import com.konlamp.rallyepulse.model.Competitor;
 import com.konlamp.rallyepulse.model.Penalty;
 import com.konlamp.rallyepulse.model.TimeKeeping;
+import com.konlamp.rallyepulse.model.secondary.AddPenalty;
 import com.konlamp.rallyepulse.model.secondary.FinishTime;
 import com.konlamp.rallyepulse.service.PenaltyService;
 import com.konlamp.rallyepulse.service.RallyeInformationService;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +26,13 @@ public class PenaltyController {
     private final RallyeInformationService rallyeInformationService;
 
     @PutMapping(path = "addPenalty")
-    public ResponseEntity<Penalty> AddPenalty(@RequestBody Penalty penalty) {
+    public ResponseEntity<Penalty> AddPenalty(@RequestBody AddPenalty penalty) {
         try {
             if (rallyeInformationService.getRallyeInformation().isResults()) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            penalty=penaltyService.addPenalty(penalty.getTime(),penalty.getCo_number());
-            return new ResponseEntity<>(penalty, HttpStatus.OK);
+            Penalty penaltyinsert =penaltyService.addPenalty(LocalTime.of(0, penalty.getMinute(), penalty.getSecond()),penalty.getCo_number());
+            return new ResponseEntity<>(penaltyinsert, HttpStatus.OK);
         }
         catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
