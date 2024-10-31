@@ -59,5 +59,6 @@ public class Competitor {
         this.vehicle = vehicle;
         this.category = category;
         this.car_class = car_class;
+        this.passcode = email;
     }
 }

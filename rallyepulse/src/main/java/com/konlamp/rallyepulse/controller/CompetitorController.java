@@ -102,13 +102,16 @@ public class CompetitorController {
         }
     }
 
-    @GetMapping(path="getbypasscode/")
-    public ResponseEntity<Competitor> getbyPasscode(@RequestBody String passcode) {
+    @GetMapping(path="getbypasscode/{passcode}")
+    public ResponseEntity<Competitor> getbyPasscode(@PathVariable("passcode") String passcode) {
         try {
+            System.out.println(passcode);
             Competitor competitor = competitorService.findByPassCode(passcode);
             return new ResponseEntity<>(competitor, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

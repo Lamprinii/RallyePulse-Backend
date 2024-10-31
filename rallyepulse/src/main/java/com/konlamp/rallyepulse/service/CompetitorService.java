@@ -64,8 +64,9 @@ public class CompetitorService {
         return old_competitor;
     }
 
-    public Competitor findByPassCode(String passCode) {
-        List<Competitor> passes=competitorRepository.findCompetitorByPasscode(passCode);
+    public Competitor findByPassCode(String passcode) {
+        List<Competitor> passes=competitorRepository.findCompetitorByPasscode(passcode);
+        System.out.println(passcode);
         if(passes.isEmpty()){
             throw new EntityNotFoundException("Competitor with this passcode does not exist");
         }
