@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
+import java.util.Random;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
@@ -59,6 +59,26 @@ public class Competitor {
         this.vehicle = vehicle;
         this.category = category;
         this.car_class = car_class;
-        this.passcode = email;
+        this.passcode = RandomFiveCharacterCode();
+
     }
+
+    public String RandomFiveCharacterCode() {
+            Random rand = new Random();
+            StringBuilder code = new StringBuilder();
+
+            // Ορίστε τους χαρακτήρες που θέλουμε να χρησιμοποιήσουμε
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            // Παράγουμε έναν κωδικό 6 χαρακτήρων
+            int codeLength = 6;
+            for (int i = 0; i < codeLength; i++) {
+                // Επιλέγουμε τυχαία έναν χαρακτήρα από τη συμβολοσειρά
+                int randomIndex = rand.nextInt(characters.length());
+                code.append(characters.charAt(randomIndex));
+            }
+        System.out.println("Ο τυχαίος κωδικός είναι: " + code);
+            return code.toString();
+    }
+
 }
