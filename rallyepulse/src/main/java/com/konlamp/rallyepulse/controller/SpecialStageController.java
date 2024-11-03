@@ -42,6 +42,18 @@ public class SpecialStageController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(path = "/getstartedspecialstages")
+    public ResponseEntity<List<SpecialStage>> getStartedSpecialStages() {
+        try {
+            List<SpecialStage> specialStages = specialStageService.getAllStartedSpecialStage();
+            return new ResponseEntity<>(specialStages, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping(path = "/ss/{id}")
     public ResponseEntity<SpecialStage> getSpecialStage(@PathVariable("id") Long id) {
         try {
