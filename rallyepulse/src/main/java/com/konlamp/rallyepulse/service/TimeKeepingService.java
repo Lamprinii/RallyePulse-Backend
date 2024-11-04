@@ -2,6 +2,7 @@ package com.konlamp.rallyepulse.service;
 
 import com.konlamp.rallyepulse.model.*;
 import com.konlamp.rallyepulse.model.secondary.Overall;
+import com.konlamp.rallyepulse.model.secondary.TimeKeepingAndroid;
 import com.konlamp.rallyepulse.repository.CompetitorRepository;
 import com.konlamp.rallyepulse.repository.TimeKeepingRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -168,6 +169,41 @@ public class TimeKeepingService {
 //        pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get());
         return stagetimes;
     }
+
+    public ArrayList<TimeKeepingAndroid> stage_classification_android(Long stage_id){
+        if (specialStageService.getSpecialStageById(stage_id).isEmpty()) {
+            throw new EntityNotFoundException("The special stage does not exist");
+        }
+        List <TimeKeeping> stagetimes = timeKeepingRepository.findByIdSpecialstageid(stage_id);
+        int i=0;
+        int j=0;
+        int k=0;
+        while (j<stagetimes.size()) {
+            i=j;
+            k = j;
+            TimeKeeping min = stagetimes.get(j);
+            while (i < stagetimes.size()) {
+                if (min.getTotal_time().compareTo(stagetimes.get(i).getTotal_time()) >0) {
+                    min = stagetimes.get(i);
+                    k = i;
+                }
+                i++;
+            }
+            TimeKeeping temp = stagetimes.get(j);
+            stagetimes.set(k, temp);
+            stagetimes.set(j, min);
+            j++;
+        }
+        ArrayList<TimeKeepingAndroid> stagetimestwo = new ArrayList<>();
+        for (int n=0; n < stagetimes.size(); n++) {
+            TimeKeepingAndroid temp = new TimeKeepingAndroid(stagetimes.get(n).getId(), stagetimes.get(n).getStart_time().toString(), stagetimes.get(n).getFinish_time().toString(), stagetimes.get(n).getTotal_time().toString(), competitorService.getCompetitorbyid(stagetimes.get(n).getId().getCompetitorid()).orElseThrow().getDriver());
+            stagetimestwo.add(temp);
+        }
+//        PdfGenerator pdfGenerator = new PdfGenerator();
+//        pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get());
+        return stagetimestwo;
+    }
+
 
     public List<Overall> OverallClassification() {
         List<Competitor> competitors = competitorService.getCompetitors();
