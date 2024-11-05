@@ -2,10 +2,7 @@ package com.konlamp.rallyepulse.controller;
 
 import com.konlamp.rallyepulse.model.Competitor;
 import com.konlamp.rallyepulse.model.TimeKeeping;
-import com.konlamp.rallyepulse.model.secondary.FinishTime;
-import com.konlamp.rallyepulse.model.secondary.Overall;
-import com.konlamp.rallyepulse.model.secondary.StartTime;
-import com.konlamp.rallyepulse.model.secondary.TimeKeepingAndroid;
+import com.konlamp.rallyepulse.model.secondary.*;
 import com.konlamp.rallyepulse.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.core.io.Resource;
@@ -129,6 +126,19 @@ public class TimeKeepingController {
     public ResponseEntity<List<TimeKeepingAndroid>> stageclassificationandroid(@PathVariable("id") Long stage_id) {
         try {
             return new ResponseEntity<>(timeKeepingService.stage_classification_android(stage_id), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "overallclassificationandroid")
+    public ResponseEntity<List<OverallAndroid>> overallclassificationandroid() {
+        try {
+            return new ResponseEntity<>(timeKeepingService.OverallClassification_android(), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

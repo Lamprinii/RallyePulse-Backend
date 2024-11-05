@@ -60,6 +60,11 @@ public class TimeKeepingAndroid {
             this.name = name;
         }
 
+    public TimeKeepingAndroid(String name, TimeKeepingid id, String total_time) {
+        this.name = name;
+        this.id = id;
+        this.total_time = total_time;
     }
+}
 
 

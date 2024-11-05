@@ -2,6 +2,7 @@ package com.konlamp.rallyepulse.service;
 
 import com.konlamp.rallyepulse.model.*;
 import com.konlamp.rallyepulse.model.secondary.Overall;
+import com.konlamp.rallyepulse.model.secondary.OverallAndroid;
 import com.konlamp.rallyepulse.model.secondary.TimeKeepingAndroid;
 import com.konlamp.rallyepulse.repository.CompetitorRepository;
 import com.konlamp.rallyepulse.repository.TimeKeepingRepository;
@@ -171,6 +172,7 @@ public class TimeKeepingService {
     }
 
     public ArrayList<TimeKeepingAndroid> stage_classification_android(Long stage_id){
+        System.out.println("HIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
         if (specialStageService.getSpecialStageById(stage_id).isEmpty()) {
             throw new EntityNotFoundException("The special stage does not exist");
         }
@@ -252,6 +254,61 @@ public class TimeKeepingService {
         PdfGenerator pdfGenerator = new PdfGenerator();
         pdfGenerator.generate(overall, competitorService);
         return overall;
+    }
+
+    public List<OverallAndroid> OverallClassification_android() {
+        List<Competitor> competitors = competitorService.getCompetitors();
+        List <Long> numbers = new ArrayList<>();
+        for (Competitor competitor : competitors) {
+            numbers.add(competitor.getCo_number());
+        }
+        List <Overall> overall = new ArrayList<>();
+        for (Long number : numbers) {
+            boolean retired = false;
+            List<TimeKeeping>temp = timeKeepingRepository.findByIdCompetitorid(number);
+            LocalTime total = LocalTime.of(0, 0, 0, 0);
+            for (TimeKeeping timekeeping : temp) {
+                if (timekeeping.getTotal_time() == null) {
+                    retired = true;
+                    break;
+                }
+                total = total.plusNanos(timekeeping.getTotal_time().toNanoOfDay());
+            }
+            if (retired == true) {
+                continue;
+            }
+            Penalty penalty = penaltyService.getPenaltybyid(number);
+            total = total.plusNanos(penalty.getTime().toNanoOfDay());
+            overall.add(new Overall(number, total));
+        }
+        int i=0;
+        int j=0;
+        int k=0;
+        while (j<overall.size()) {
+            i=j;
+            k = j;
+            Overall min = overall.get(j);
+            while (i < overall.size()) {
+                if (min.getTime().compareTo(overall.get(i).getTime()) >0) {
+                    min = overall.get(i);
+                    k = i;
+                }
+                i++;
+            }
+            Overall temp = overall.get(j);
+            overall.set(k, temp);
+            overall.set(j, min);
+            j++;
+        }
+        ArrayList<OverallAndroid> overalltwo = new ArrayList<>();
+
+
+        for (int n=0; n < overall.size(); n++) {
+            System.out.println(competitorService.getCompetitorbyid(overall.get(n).getCo_number()).orElseThrow().getDriver());
+            OverallAndroid temp = new OverallAndroid(overall.get(n).getCo_number(), overall.get(n).getTime(), competitorService.getCompetitorbyid(overall.get(n).getCo_number()).orElseThrow().getDriver());
+            overalltwo.add(temp);
+        }
+        return overalltwo;
     }
 
     public List<Overall> OverallClassificationByClass(String car_class) {
