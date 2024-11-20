@@ -21,14 +21,18 @@ public class RallyeInformationService {
 
     private final RallyeInformationRepository rallyeInformationRepository;
     public RallyeInformation addrallye(RallyeInformation rallyeInformation) {
+
         return rallyeInformationRepository.save(rallyeInformation);
     }
     public void setfinal() {
         getRallyeInformation().setResults(true);
     }
-    public RallyeInformation getRallyeInformation() {
+
+    public RallyeInformation getRallyeInformation()
+    {
         return rallyeInformationRepository.findById(1L).orElse(null);
     }
+
     public boolean deleterace() {
         penaltyRepository.deleteAll();
         competitorRepository.deleteAll();

@@ -22,6 +22,6 @@ public class SpecialStage {
     @Column
     private String name;
     @Column
-    private float distance;
+    private String distance;
 
 }

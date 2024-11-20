@@ -110,7 +110,7 @@ public class TimeKeepingController {
     }
 
     @GetMapping(path = "getStageClassification/{id}")
-    public ResponseEntity<List<TimeKeeping>> stageclassification(@PathVariable("id") Long stage_id) {
+    public ResponseEntity<List<TimekeepingExport>> stageclassification(@PathVariable("id") Long stage_id) {
         try {
             return new ResponseEntity<>(timeKeepingService.stage_classification(stage_id), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
