@@ -1,5 +1,6 @@
 package com.konlamp.rallyepulse.controller;
 
+import com.konlamp.rallyepulse.model.secondary.Message;
 import com.konlamp.rallyepulse.service.AndroidNotificationService;
 import com.konlamp.rallyepulse.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,11 @@ public class AndroidNotificationController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendNotification(
-            @RequestBody String title
+            @RequestBody Message message
              ) {
-            String body = "test";
-            System.out.println(title+"HIIIIIIIIIIIIIIIIIIII I I ");
         try {
-            String response = notificationService.sendNotificationToTopic(title, body);
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            String response = notificationService.sendNotificationToTopic(message.getTitle(), message.getBody());
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Failed to send notification: " + e.getMessage());
         }
