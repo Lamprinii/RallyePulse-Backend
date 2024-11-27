@@ -48,7 +48,7 @@ public class RallyePulseApplication {
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,1L), LocalTime.of(15,23,0,0), LocalTime.of(15,23,0,0).plusMinutes(15).plusSeconds(23).plusNanos(nanos3), LocalTime.of(00,15,23,0).plusNanos(nanos3)));
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,1L), LocalTime.of(15,25,0,0), LocalTime.of(15,25,0,0).plusMinutes(16).plusSeconds(22).plusNanos(nanos1), LocalTime.of(00,16,22,0).plusNanos(nanos1)));
 			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(1L,2L), LocalTime.of(16,45,0,0),LocalTime.of(16,45,0,0).plusMinutes(17).plusSeconds(49).plusNanos(nanos4) , LocalTime.of(00,17,49,0).plusNanos(nanos4)));
-			timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,2L), LocalTime.of(16,47,0,0), LocalTime.of(16,47,0,0).plusMinutes(16).plusSeconds(10).plusNanos(nanos2), LocalTime.of(00,16,10,0).plusNanos(nanos2)));
+			//timeKeepingRepository.save(new TimeKeeping(new TimeKeepingid(2L,2L), LocalTime.of(16,47,0,0), LocalTime.of(16,47,0,0).plusMinutes(16).plusSeconds(10).plusNanos(nanos2), LocalTime.of(00,16,10,0).plusNanos(nanos2)));
 
 
 		};
