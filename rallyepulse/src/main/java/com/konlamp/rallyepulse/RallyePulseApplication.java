@@ -37,8 +37,8 @@ public class RallyePulseApplication {
 			competitorRepository.save(new Competitor(1L,"Lamprini Zerva", "Konstantinos Perrakis", "rikoula4@gmail.com", "6957454125", "BMW E36", "C2", "A5"));
 			competitorRepository.save(new Competitor(2L,"Lamprini Zerva", "Konstantinos Perrakis", "test@gmail.com", "6957454125", "BMW E36", "C1", "A4"));
 			//competitorRepository.save(new Competitor(42L,"Iliopoulos", "Test", "rikoula4@gmail.com", "6957454125", "Ford Fiesta", "C1", "A4"));
-			specialStageRepository.save(new SpecialStage(1L, "Eleftherochori I", "18,62"));
-			specialStageRepository.save(new SpecialStage(2L, "Eleftherochori II", "18,62"));
+			specialStageRepository.save(new SpecialStage(1L, "Eleftherochori I", "18.62"));
+			specialStageRepository.save(new SpecialStage(2L, "Eleftherochori II", "18.62"));
 			penaltyRepository.save(new Penalty(1L,LocalTime.of(0,0,0,0)));
 			penaltyRepository.save(new Penalty(2L,LocalTime.of(0,0,0,0)));
 			int nanos1=816000000;

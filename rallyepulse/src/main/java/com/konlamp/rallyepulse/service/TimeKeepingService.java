@@ -33,6 +33,55 @@ public class TimeKeepingService {
     private final SpecialStageService specialStageService;
     private final NotificationService socket;
 
+    public Double medianspeed() {
+       List<TimeKeeping> results = timeKeepingRepository.findAll();
+       ArrayList<Double> averagespeed = new ArrayList<>();
+       for (TimeKeeping timeKeeping : results) {
+           Double distance = Double.valueOf(specialStageService.getSpecialStageById(timeKeeping.getId().getSpecialstageid()).get().getDistance());
+           Double nanos = distance/timeKeeping.getTotal_time().toNanoOfDay();
+           double conversionFactor = 3.6e12;
+           averagespeed.add(conversionFactor*nanos);
+       }
+       Double sum=0.0;
+        for (Double a : averagespeed) {
+         sum = sum+a;
+        }
+        return sum/averagespeed.size();
+    }
+
+    public Double medianspeedperstage(Long stageid) {
+        List<TimeKeeping> results = timeKeepingRepository.findByIdSpecialstageid(stageid);
+        ArrayList<Double> averagespeed = new ArrayList<>();
+        Double distance = Double.valueOf(specialStageService.getSpecialStageById(stageid).get().getDistance());
+        for (TimeKeeping timeKeeping : results) {
+            Double nanos = distance/timeKeeping.getTotal_time().toNanoOfDay();
+            double conversionFactor = 3.6e12;
+            averagespeed.add(conversionFactor*nanos);
+        }
+        Double sum=0.0;
+        for (Double a : averagespeed) {
+            sum = sum+a;
+        }
+        return sum/averagespeed.size();
+    }
+
+    public Double medianspeedpercompetitor(Long competitorid) {
+        List<TimeKeeping> results = timeKeepingRepository.findByIdCompetitorid(competitorid);
+        ArrayList<Double> averagespeed = new ArrayList<>();
+        for (TimeKeeping timeKeeping : results) {
+            Double distance = Double.valueOf(specialStageService.getSpecialStageById(timeKeeping.getId().getSpecialstageid()).get().getDistance());
+            Double nanos = distance/timeKeeping.getTotal_time().toNanoOfDay();
+            double conversionFactor = 3.6e12;
+            averagespeed.add(conversionFactor*nanos);
+        }
+        Double sum=0.0;
+        for (Double a : averagespeed) {
+            sum = sum+a;
+        }
+        return sum/averagespeed.size();
+    }
+
+
     public LocalTime CalculateStageTime (LocalTime start_time, LocalTime finish_time, int decimal) {
         int nano_start = start_time.getNano();
         int nano_finish = finish_time.getNano();

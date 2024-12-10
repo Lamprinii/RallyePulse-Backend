@@ -170,6 +170,36 @@ public class TimeKeepingController {
         }
     }
 
+    @GetMapping(path="getMedianSpeed")
+    public ResponseEntity<Double> medianspeed(){
+        try {
+            return new ResponseEntity<Double>(timeKeepingService.medianspeed(), HttpStatus.OK);
+        }  catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path="getmedianspeedperstage/{id}")
+    public ResponseEntity<Double> medianspeedperstage(@PathVariable("id")Long stage_id){
+        try {
+            return new ResponseEntity<Double>(timeKeepingService.medianspeedperstage(stage_id), HttpStatus.OK);
+        }  catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path="getmedianspeedpercompetitor/{id}")
+    public ResponseEntity<Double> medianspeedpercompetitor(@PathVariable("id")Long competitor_id){
+        try {
+            return new ResponseEntity<Double>(timeKeepingService.medianspeedpercompetitor(competitor_id), HttpStatus.OK);
+        }  catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping(path = "getOverallClassificationpdf")
     public ResponseEntity <Resource> overallclassification_pdf() {
         try {
