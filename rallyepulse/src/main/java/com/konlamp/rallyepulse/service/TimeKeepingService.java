@@ -33,6 +33,7 @@ public class TimeKeepingService {
     private final SpecialStageService specialStageService;
     private final NotificationService socket;
 
+
     public Double medianspeed() {
        List<TimeKeeping> results = timeKeepingRepository.findAll();
        ArrayList<Double> averagespeed = new ArrayList<>();
@@ -271,8 +272,8 @@ public class TimeKeepingService {
             Competitor comp=competitorService.getCompetitorbyid(stagetimes.get(l).getId().getCompetitorid()).orElseThrow();
             exports.add(new TimekeepingExport(stagetimes.get(l).getId(),stagetimes.get(l).getStart_time(),stagetimes.get(l).getFinish_time(),stagetimes.get(l).getTotal_time(),comp.getDriver()+"-"+comp.getCodriver(),comp.getCar_class(), comp.getCategory(),"+"+difftoFirstS,"+"+difftoPrevS));
         }
-//        PdfGenerator pdfGenerator = new PdfGenerator();
-//        pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get());
+        PdfGenerator pdfGenerator = new PdfGenerator();
+        pdfGenerator.generatestage(stagetimes, competitorService,specialStageService.getSpecialStageById(stage_id).get(), this);
         return exports;
     }
 
@@ -417,7 +418,7 @@ public class TimeKeepingService {
             }
         }
         PdfGenerator pdfGenerator = new PdfGenerator();
-        pdfGenerator.generate(overall, competitorService);
+        pdfGenerator.generate(overall, competitorService, this);
         return overall;
     }
 
@@ -592,7 +593,7 @@ public class TimeKeepingService {
             }
         }
         PdfGenerator pdfGenerator = new PdfGenerator();
-        pdfGenerator.generatebycategoryclass(overall, competitorService,"Class", car_class);
+        pdfGenerator.generatebycategoryclass(overall, competitorService,"Class", car_class, this);
         return overall;
     }
 
@@ -703,7 +704,7 @@ public class TimeKeepingService {
             }
         }
         PdfGenerator pdfGenerator = new PdfGenerator();
-        pdfGenerator.generatebycategoryclass(overall, competitorService,"Category", category);
+        pdfGenerator.generatebycategoryclass(overall, competitorService,"Category", category, this);
         return overall;
     }
 
@@ -815,7 +816,7 @@ public class TimeKeepingService {
         }
         System.out.println(overall.get(1).getPrev());
         PdfGenerator pdfGenerator = new PdfGenerator();
-        pdfGenerator.generateoverallbystage(overall, competitorService,specialStageService.getSpecialStageById(stage_id).get());
+        pdfGenerator.generateoverallbystage(overall, competitorService,specialStageService.getSpecialStageById(stage_id).get(), this);
         return overall;
     }
 }

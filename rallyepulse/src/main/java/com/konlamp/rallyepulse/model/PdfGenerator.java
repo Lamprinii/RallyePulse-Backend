@@ -19,6 +19,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.konlamp.rallyepulse.model.secondary.Overall;
 import com.konlamp.rallyepulse.service.CompetitorService;
 import com.konlamp.rallyepulse.service.SpecialStageService;
+import com.konlamp.rallyepulse.service.TimeKeepingService;
 import org.hibernate.sql.ast.tree.expression.Over;
 
 import java.io.FileNotFoundException;
@@ -28,7 +29,7 @@ import java.net.MalformedURLException;
 
 public class PdfGenerator {
 
-    public void generate(List<Overall> overall, CompetitorService competitorservice) {
+    public void generate(List<Overall> overall, CompetitorService competitorservice, TimeKeepingService timeKeepingService) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream("PDF/OverallClassifications/OverallClassification.pdf"));
@@ -38,14 +39,19 @@ public class PdfGenerator {
             img.scaleAbsoluteWidth(200F);
             img.setAlignment(Element.ALIGN_CENTER);
             Font header1 = FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
+            Font header2 = FontFactory.getFont(FontFactory.COURIER, 10, BaseColor.BLACK);
             Font headerTable = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.WHITE);
             Font tableFont = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
             Font diffF = FontFactory.getFont(FontFactory.COURIER, 7, new BaseColor(0,150,0));
             Font posistion = FontFactory.getFont(FontFactory.COURIER_BOLD, 9, BaseColor.BLACK);
             Paragraph paragraph = new Paragraph("Overall Classification", header1);
+            Paragraph paragraph1 = new Paragraph("Average Speed: " + timeKeepingService.medianspeed(), header2);
             paragraph.setAlignment(Element.ALIGN_CENTER);
+            paragraph1.setAlignment(Element.ALIGN_CENTER);
             document.add(img);
             document.add(paragraph);
+            document.add(Chunk.NEWLINE);
+            document.add(paragraph1);
             document.add(Chunk.NEWLINE);
             PdfPTable table = new PdfPTable(7);
             Paragraph orderP=new Paragraph("Position", headerTable);
@@ -226,7 +232,7 @@ public class PdfGenerator {
         }
     }
 
-    public void generatebycategoryclass(List<Overall> overall, CompetitorService competitorservice, String type, String nameC) {
+    public void generatebycategoryclass(List<Overall> overall, CompetitorService competitorservice, String type, String nameC, TimeKeepingService timeKeepingService) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream("PDF/OverallClassificationsByCategory/OverallClassification"+type+nameC+".pdf"));
@@ -236,14 +242,19 @@ public class PdfGenerator {
             img.scaleAbsoluteWidth(200F);
             img.setAlignment(Element.ALIGN_CENTER);
             Font header1 = FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
+            Font header2 = FontFactory.getFont(FontFactory.COURIER, 10, BaseColor.BLACK);
             Font headerTable = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.WHITE);
             Font tableFont = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
             Font diffF = FontFactory.getFont(FontFactory.COURIER, 7, new BaseColor(0,150,0));
             Font posistion = FontFactory.getFont(FontFactory.COURIER_BOLD, 9, BaseColor.BLACK);
             Paragraph paragraph = new Paragraph("Overall Classification Of "+type+" :"+nameC,  header1);
+            Paragraph paragraph1 = new Paragraph("Average Speed: " + timeKeepingService.medianspeed(), header2);
             paragraph.setAlignment(Element.ALIGN_CENTER);
+            paragraph1.setAlignment(Element.ALIGN_CENTER);
             document.add(img);
             document.add(paragraph);
+            document.add(Chunk.NEWLINE);
+            document.add(paragraph1);
             document.add(Chunk.NEWLINE);
             PdfPTable table = new PdfPTable(7);
             Paragraph orderP=new Paragraph("Position", headerTable);
@@ -424,7 +435,7 @@ public class PdfGenerator {
         }
     }
 
-    public void generateoverallbystage(List<Overall> overall, CompetitorService competitorservice,SpecialStage specialStage) {
+    public void generateoverallbystage(List<Overall> overall, CompetitorService competitorservice,SpecialStage specialStage, TimeKeepingService timeKeepingService) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream("PDF/OverallByStageClassifications/Overall_SS"+specialStage.getId()+".pdf"));
@@ -434,6 +445,7 @@ public class PdfGenerator {
             img.scaleAbsoluteWidth(200F);
             img.setAlignment(Element.ALIGN_CENTER);
             Font header1 = FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
+            Font header2 = FontFactory.getFont(FontFactory.COURIER, 10, BaseColor.BLACK);
             Font headerTable = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.WHITE);
             Font tableFont = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
             Font diffF = FontFactory.getFont(FontFactory.COURIER, 7, new BaseColor(0,150,0));
@@ -441,10 +453,16 @@ public class PdfGenerator {
             Paragraph paragraph = new Paragraph("Overall Classification", header1);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             Paragraph paragraph2 = new Paragraph("Until Stage "+specialStage.getName(),header1);
+            Paragraph paragraph1 = new Paragraph("Average Speed: " + timeKeepingService.medianspeed(), header2);
+            paragraph1.setAlignment(Element.ALIGN_CENTER);
             paragraph2.setAlignment(Element.ALIGN_CENTER);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(img);
             document.add(paragraph);
+            document.add(Chunk.NEWLINE);
+            document.add(paragraph2);
+            document.add(Chunk.NEWLINE);
+            document.add(paragraph1);
             document.add(Chunk.NEWLINE);
             PdfPTable table = new PdfPTable(7);
             Paragraph orderP=new Paragraph("Position", headerTable);
@@ -624,7 +642,7 @@ public class PdfGenerator {
         }
     }
 
-    public void generatestage(List<TimeKeeping> overall, CompetitorService competitorservice, SpecialStage specialStage) {
+    public void generatestage(List<TimeKeeping> overall, CompetitorService competitorservice, SpecialStage specialStage, TimeKeepingService timeKeepingService) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream("PDF/StageClassifications/"+specialStage.getName()+".pdf"));
@@ -634,18 +652,23 @@ public class PdfGenerator {
             img.scaleAbsoluteWidth(200F);
             img.setAlignment(Element.ALIGN_CENTER);
             Font header1 = FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
+            Font header2 = FontFactory.getFont(FontFactory.COURIER, 10, BaseColor.BLACK);
             Font headerTable = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.WHITE);
             Font tableFont = FontFactory.getFont(FontFactory.COURIER, 8, BaseColor.BLACK);
             Font posistion = FontFactory.getFont(FontFactory.COURIER_BOLD, 9, BaseColor.BLACK);
             Font diffF = FontFactory.getFont(FontFactory.COURIER, 7, new BaseColor(0,150,0));
 
             Paragraph paragraph = new Paragraph("Stage Classification", header1);
+            Paragraph paragraph1 = new Paragraph("Average Speed: " + timeKeepingService.medianspeed(), header2);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             Paragraph paragraph2 = new Paragraph(""+specialStage.getName(),header1);
             paragraph2.setAlignment(Element.ALIGN_CENTER);
+            paragraph1.setAlignment(Element.ALIGN_CENTER);
             document.add(img);
             document.add(paragraph);
             document.add(paragraph2);
+            document.add(Chunk.NEWLINE);
+            document.add(paragraph1);
             document.add(Chunk.NEWLINE);
             PdfPTable table = new PdfPTable(8);
             Paragraph orderP=new Paragraph("Position", headerTable);
