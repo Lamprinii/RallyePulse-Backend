@@ -15,8 +15,8 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         try {
-            // Βεβαιώσου ότι η διαδρομή είναι σωστή
-            FileInputStream serviceAccount = new FileInputStream("C:\\Users\\Lamprini\\Desktop\\RallyePulse-Backend\\rallyepulse\\src\\main\\resources\\serviceAccountKey.json");
+
+            FileInputStream serviceAccount = new FileInputStream("rallyepulse/src/main/resources/serviceAccountKey.json");
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
